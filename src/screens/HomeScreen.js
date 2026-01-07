@@ -1,17 +1,20 @@
-import React from 'react';
-import { View, Button, Text } from 'react-native';
+import { View, Button } from "react-native";
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={{ padding: 20 }}>
-      <Text>Select Learning Mode</Text>
-      <Button
-        title="Non-Gamified Mode"
-        onPress={() => navigation.navigate('Quiz', { mode: 'control' })}
-      />
+    <View>
       <Button
         title="Gamified Mode"
-        onPress={() => navigation.navigate('Quiz', { mode: 'test' })}
+        onPress={() =>
+          navigation.navigate("Quiz", { mode: "gamified" })
+        }
+      />
+
+      <Button
+        title="Non-Gamified Mode"
+        onPress={() =>
+          navigation.navigate("Quiz", { mode: "plain" })
+        }
       />
     </View>
   );

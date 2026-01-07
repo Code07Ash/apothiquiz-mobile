@@ -19,6 +19,11 @@ export default function HomeScreen() {
         title="Start Non-Gamified Quiz"
         onPress={() => router.push('/quiz?mode=control')}
       />
+
+      <Button
+        title="View Analytics"
+        onPress={() => router.push('/analytics')}
+      />
     </View>
   );
 }
