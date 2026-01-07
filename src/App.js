@@ -1,22 +1,16 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
-import QuizScreen from './screens/QuizScreen';
-import ResultScreen from './screens/ResultScreen';
-import SurveyScreen from './screens/SurveyScreen';
-
-const Stack = createStackNavigator();
+import { Button, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Quiz" component={QuizScreen} />
-        <Stack.Screen name="Results" component={ResultScreen} />
-        <Stack.Screen name="Survey" component={SurveyScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+        ApothiQuiz Mobile
+      </Text>
+      <Text style={{ marginBottom: 20 }}>
+        Gamified Drug Classification
+      </Text>
+
+      <Button title="Start Quiz" onPress={() => {}} />
+    </View>
   );
 }
