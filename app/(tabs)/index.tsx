@@ -1,23 +1,24 @@
+import { useRouter } from 'expo-router';
 import { Button, Text, View } from 'react-native';
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
         ApothiQuiz Mobile
       </Text>
 
-      <Text style={{ marginVertical: 16 }}>
-        Gamified Drug Classification
-      </Text>
+      <Button
+        title="Start Gamified Quiz"
+        onPress={() => router.push('/quiz?mode=gamified')}
+      />
 
-      <Button title="Start Quiz" onPress={() => {}} />
+      <Button
+        title="Start Non-Gamified Quiz"
+        onPress={() => router.push('/quiz?mode=control')}
+      />
     </View>
   );
 }

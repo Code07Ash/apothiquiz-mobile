@@ -1,6 +1,17 @@
 export const drugs = [
-  { name: 'Amoxicillin', class: 'Antibiotic' },
-  { name: 'Paracetamol', class: 'Analgesic' },
-  { name: 'Metformin', class: 'Antidiabetic' },
-  { name: 'Atorvastatin', class: 'Statin' }
+  {
+    name: 'Amoxicillin',
+    correctClass: 'Antibiotic',
+    options: ['Antibiotic', 'Analgesic', 'Antidiabetic', 'Statin'],
+  },
+  {
+    name: 'Paracetamol',
+    correctClass: 'Analgesic',
+    options: ['Antibiotic', 'Analgesic', 'Antidiabetic', 'Statin'],
+  },
+  {
+    name: 'Metformin',
+    correctClass: 'Antidiabetic',
+    options: ['Antibiotic', 'Analgesic', 'Antidiabetic', 'Statin'],
+  },
 ];
