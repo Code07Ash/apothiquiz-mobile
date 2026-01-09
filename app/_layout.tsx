@@ -3,10 +3,14 @@ import { Stack } from 'expo-router';
 export default function RootLayout() {
   return (
     <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="signup" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="quiz" options={{ title: 'Quiz' }} />
-      <Stack.Screen name="result" options={{ title: 'Result' }} />
-      <Stack.Screen name="analytics" options={{ title: "Analytics" }} />
+      <Stack.Screen name="quiz" options={{ headerShown: false }} />
+      <Stack.Screen name="result" options={{ headerShown: false }} />
+      <Stack.Screen name="analytics" options={{ headerShown: false }} />
+      <Stack.Screen name="feedback" options={{ headerShown: false }} />
     </Stack>
   );
 }
