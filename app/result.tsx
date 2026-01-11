@@ -231,7 +231,7 @@ export default function ResultScreen() {
         <View style={styles.actionsContainer}>
           <TouchableOpacity
             style={styles.primaryButton}
-            onPress={() => router.replace('/')}
+            onPress={() => router.replace('/(tabs)')}
           >
             <LinearGradient
               colors={mode === 'gamified' ? ['#FF6B6B', '#FF8E53'] : ['#4ECDC4', '#44A08D']}

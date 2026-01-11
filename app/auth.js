@@ -53,12 +53,7 @@ export async function loginUser(username, password) {
 }
 
 export async function logoutUser() {
-  try {
-    await AsyncStorage.removeItem(AUTH_KEYS.CURRENT_USER);
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+  await AsyncStorage.removeItem(AUTH_KEYS.CURRENT_USER);
 }
 
 export async function getCurrentUser() {

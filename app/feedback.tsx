@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput,
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet, 
-  SafeAreaView,
-  StatusBar,
-  Alert
-} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { saveQuizSession } from '../src/utils/storage';
 
 export default function FeedbackScreen() {
@@ -56,14 +56,19 @@ export default function FeedbackScreen() {
       Alert.alert(
         'Thank You!', 
         'Your feedback has been submitted successfully.',
-        [{ text: 'OK', onPress: () => router.replace('/') }]
+        [{ text: 'OK', onPress: () => router.replace('/(tabs)') }]
       );
     } catch (error) {
       Alert.alert('Error', 'Failed to submit feedback. Please try again.');
     }
   };
 
-  const RatingScale = ({ title, value, onValueChange, labels }) => (
+  const RatingScale = ({ title, value, onValueChange, labels }: {
+    title: string;
+    value: number;
+    onValueChange: (value: number) => void;
+    labels: [string, string];
+  }) => (
     <View style={styles.ratingContainer}>
       <Text style={styles.ratingTitle}>{title}</Text>
       <View style={styles.ratingScale}>
@@ -269,9 +274,9 @@ export default function FeedbackScreen() {
 
         <TouchableOpacity
           style={styles.skipButton}
-          onPress={() => router.replace('/')}
+          onPress={() => router.replace('/(tabs)')}
         >
-          <Text style={styles.skipButtonText}>Skip for now</Text>
+          <Text style={styles.skipButtonText}>Skip</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -284,13 +289,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   header: {
-    paddingTop: 20,
-    paddingBottom: 30,
+    paddingTop: 10,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: 'white',
     marginBottom: 5,
@@ -301,78 +306,69 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 20,
   },
   section: {
-    marginVertical: 20,
+    marginBottom: 25,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 15,
   },
   modeSelector: {
+    flexDirection: 'row',
     gap: 10,
   },
   modeButton: {
-    backgroundColor: 'white',
+    flex: 1,
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: '#f0f0f0',
     borderWidth: 2,
-    borderColor: '#E8E8E8',
+    borderColor: 'transparent',
   },
   modeButtonActive: {
-    borderColor: '#3498DB',
     backgroundColor: '#3498DB',
+    borderColor: '#2980B9',
   },
   modeButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#2C3E50',
   },
   modeButtonTextActive: {
     color: 'white',
   },
   ratingContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    marginBottom: 20,
   },
   ratingTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#2C3E50',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   ratingScale: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   ratingButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#ECF0F1',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#E8E8E8',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
   },
   ratingButtonActive: {
     backgroundColor: '#3498DB',
-    borderColor: '#2980B9',
   },
   ratingButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#7F8C8D',
   },
@@ -388,19 +384,11 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
   },
   inputContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
     marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#2C3E50',
     marginBottom: 10,
   },
@@ -410,10 +398,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionButton: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#ECF0F1',
+    backgroundColor: '#E8E8E8',
     borderWidth: 1,
     borderColor: 'transparent',
   },
@@ -423,29 +411,23 @@ const styles = StyleSheet.create({
   },
   optionButtonText: {
     fontSize: 14,
-    color: '#7F8C8D',
-    fontWeight: '500',
+    color: '#2C3E50',
   },
   optionButtonTextActive: {
     color: 'white',
   },
   textInput: {
     backgroundColor: 'white',
-    padding: 15,
     borderRadius: 12,
+    padding: 15,
+    fontSize: 16,
     borderWidth: 1,
     borderColor: '#E8E8E8',
-    fontSize: 16,
     minHeight: 100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
   },
   submitButton: {
     marginVertical: 20,
-    borderRadius: 15,
+    borderRadius: 12,
     overflow: 'hidden',
   },
   submitGradient: {
@@ -462,12 +444,13 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 30,
-    borderWidth: 1,
+    marginBottom: 20,
+    borderWidth: 2,
     borderColor: '#E8E8E8',
   },
   skipButtonText: {
     fontSize: 16,
-    color: '#7F8C8D',
+    fontWeight: '600',
+    color: '#2C3E50',
   },
 });

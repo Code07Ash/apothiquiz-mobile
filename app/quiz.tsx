@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { chapters, getAllDrugs, getDrugsByChapter } from '../src/data/chapters';
 import { calculateScore, checkAchievements, getLevel } from '../src/utils/scoring';
-import { saveQuizSession, getUserStats } from '../src/utils/storage';
+import { saveQuizSession, getUserStats, updateChapterProgress } from '../src/utils/storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -211,18 +211,13 @@ export default function QuizScreen() {
 
     await saveQuizSession(session);
 
-    router.push({
-      pathname: '/result',
-      params: {
-        score: finalScore.toString(),
-        total: questions.length.toString(),
-        correct: totalCorrect.toString(),
-        mode,
-        streak: longestStreak.toString(),
-        time: Math.round(totalTime).toString(),
-        chapterId: chapterId || 'mixed'
-      }
-    });
+    // Update chapter progress if this was a chapter-specific quiz
+    if (chapterId) {
+      await updateChapterProgress(parseInt(chapterId), finalScore, questions.length, totalCorrect);
+    }
+
+    // Redirect to analytics page after quiz completion
+    router.push('/analytics');
   };
 
   const toggleHint = () => {

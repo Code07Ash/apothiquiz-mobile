@@ -15,15 +15,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { loginUser } from './auth';
 
+interface LoginErrors {
+  username?: string;
+  password?: string;
+  general?: string;
+}
+
 export default function LoginScreen() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<LoginErrors>({});
 
   const validateInputs = () => {
-    const newErrors = {};
+    const newErrors: LoginErrors = {};
     
     if (!username.trim()) {
       newErrors.username = 'Username is required';
@@ -51,9 +57,10 @@ export default function LoginScreen() {
       if (result.success) {
         router.replace('/(tabs)');
       } else {
-        setErrors({ general: result.error });
+        setErrors({ general: result.error || 'Login failed' });
       }
     } catch (error) {
+      console.error('Login error:', error);
       setErrors({ general: 'Login failed. Please try again.' });
     } finally {
       setLoading(false);
@@ -97,7 +104,7 @@ export default function LoginScreen() {
                   onChangeText={(text) => {
                     setUsername(text);
                     if (errors.username) {
-                      setErrors(prev => ({ ...prev, username: null }));
+                      setErrors(prev => ({ ...prev, username: undefined }));
                     }
                   }}
                   placeholder="Enter your username"
@@ -118,7 +125,7 @@ export default function LoginScreen() {
                   onChangeText={(text) => {
                     setPassword(text);
                     if (errors.password) {
-                      setErrors(prev => ({ ...prev, password: null }));
+                      setErrors(prev => ({ ...prev, password: undefined }));
                     }
                   }}
                   placeholder="Enter your password"

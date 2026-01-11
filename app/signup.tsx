@@ -10,15 +10,36 @@ import {
   Alert,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Modal
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { registerUser } from './auth';
 
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+  general?: string;
+}
+
 export default function SignupScreen() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     dateOfBirth: '',
@@ -27,17 +48,24 @@ export default function SignupScreen() {
     confirmPassword: ''
   });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const updateField = (field, value) => {
+  const updateField = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
+
+
+  const validateDateFormat = (date: string): boolean => {
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    return dateRegex.test(date);
+  };
+
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     const { firstName, lastName, dateOfBirth, username, password, confirmPassword } = formData;
 
     if (!firstName.trim()) {
@@ -50,6 +78,8 @@ export default function SignupScreen() {
 
     if (!dateOfBirth.trim()) {
       newErrors.dateOfBirth = 'Date of Birth is required';
+    } else if (!validateDateFormat(dateOfBirth)) {
+      newErrors.dateOfBirth = 'Please use DD/MM/YYYY format';
     }
 
     if (!username.trim()) {
@@ -87,6 +117,8 @@ export default function SignupScreen() {
           'Account created successfully! Please login.',
           [{ text: 'OK', onPress: () => router.replace('/login') }]
         );
+        // Immediate redirect to login
+        router.replace('/login');
       } else {
         setErrors({ general: result.error });
       }
@@ -167,6 +199,8 @@ export default function SignupScreen() {
                   onChangeText={(value) => updateField('dateOfBirth', value)}
                   placeholder="DD/MM/YYYY"
                   placeholderTextColor="#95A5A6"
+                  keyboardType="numeric"
+                  maxLength={10}
                 />
                 {errors.dateOfBirth && (
                   <Text style={styles.fieldError}>{errors.dateOfBirth}</Text>
@@ -239,6 +273,8 @@ export default function SignupScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
+      
+
     </SafeAreaView>
   );
 }

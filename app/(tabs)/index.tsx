@@ -1,63 +1,85 @@
-import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet, 
-  Dimensions,
-  StatusBar,
-  SafeAreaView,
-  Alert
-} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { chapters } from '../../src/data/chapters';
-import { getUserStats, getChapterProgress } from '../../src/utils/storage';
+import { getChapterProgress, getUserStats } from '../../src/utils/storage';
 import { getCurrentUser, logoutUser } from '../auth';
 
 const { width } = Dimensions.get('window');
 
+interface UserStats {
+  totalScore: number;
+  totalCorrect: number;
+  longestStreak: number;
+}
+
+interface ChapterProgress {
+  [key: number]: {
+    totalCorrect: number;
+    totalQuestions: number;
+  };
+}
+
+interface User {
+  firstName: string;
+  lastName: string;
+}
+
+interface Chapter {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  drugs: any[];
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState('gamified');
-  const [userStats, setUserStats] = useState(null);
-  const [chapterProgress, setChapterProgress] = useState({});
-  const [currentUser, setCurrentUser] = useState(null);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [chapterProgress, setChapterProgress] = useState<ChapterProgress>({});
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     loadUserData();
   }, []);
 
   const loadUserData = async () => {
-    const stats = await getUserStats();
-    const progress = await getChapterProgress();
-    const user = await getCurrentUser();
-    setUserStats(stats);
-    setChapterProgress(progress);
-    setCurrentUser(user);
+    try {
+      const stats = await getUserStats();
+      const progress = await getChapterProgress();
+      const user = await getCurrentUser();
+      setUserStats(stats);
+      setChapterProgress(progress);
+      setCurrentUser(user);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Logout', 
-          style: 'destructive',
-          onPress: async () => {
-            await logoutUser();
-            router.replace('/login');
-          }
-        }
-      ]
-    );
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      router.replace('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
-  const startQuiz = (chapterId = null) => {
-    const params = { mode: selectedMode };
+  const startQuiz = (chapterId?: number) => {
+    const params: { mode: string; chapterId?: string } = { mode: selectedMode };
     if (chapterId) params.chapterId = chapterId.toString();
     
     router.push({
@@ -114,7 +136,7 @@ export default function HomeScreen() {
     </View>
   );
 
-  const ChapterCard = ({ chapter }) => {
+  const ChapterCard = ({ chapter }: { chapter: Chapter }) => {
     const progress = chapterProgress[chapter.id];
     const completionRate = progress ? 
       Math.round((progress.totalCorrect / Math.max(progress.totalQuestions, 1)) * 100) : 0;
@@ -202,6 +224,13 @@ export default function HomeScreen() {
             <ChapterCard key={chapter.id} chapter={chapter} />
           ))}
         </View>
+
+        <TouchableOpacity
+          style={styles.chaptersButton}
+          onPress={() => router.push('/chapters')}
+        >
+          <Text style={styles.chaptersText}>Browse All Chapters</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.allChaptersButton}
@@ -397,6 +426,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
     fontWeight: '500',
+  },
+  chaptersButton: {
+    backgroundColor: '#9B59B6',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  chaptersText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
   },
   allChaptersButton: {
     marginVertical: 20,

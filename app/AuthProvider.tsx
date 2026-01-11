@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
-import { isAuthenticated } from '../src/services/auth';
+import { isAuthenticated } from './auth';
 
 export default function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -14,6 +14,13 @@ export default function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    // Check auth status whenever pathname changes
+    if (!isLoading) {
+      checkAuthStatus();
+    }
+  }, [pathname]);
+
+  useEffect(() => {
     if (isLoading) return;
 
     const isAuthPage = pathname === '/login' || pathname === '/signup';
@@ -21,7 +28,7 @@ export default function AuthProvider({ children }) {
     if (!isLoggedIn && !isAuthPage) {
       router.replace('/login');
     } else if (isLoggedIn && isAuthPage) {
-      router.replace('/');
+      router.replace('/(tabs)');
     }
   }, [isLoggedIn, pathname, isLoading]);
 

@@ -90,13 +90,27 @@ export async function updateUserStats(session) {
   }
 }
 
-export async function getChapterProgress() {
+export async function getChapterProgress(chapterId = null) {
   try {
     const progress = await AsyncStorage.getItem(STORAGE_KEYS.CHAPTER_PROGRESS);
-    return progress ? JSON.parse(progress) : {};
+    const allProgress = progress ? JSON.parse(progress) : {};
+    
+    if (chapterId) {
+      return allProgress[chapterId] || {
+        attempts: 0,
+        bestScore: 0,
+        totalQuestions: 0,
+        completedQuestions: 0,
+        totalCorrect: 0,
+        completed: false,
+        accuracy: 0
+      };
+    }
+    
+    return allProgress;
   } catch (error) {
     console.error('Error getting chapter progress:', error);
-    return {};
+    return chapterId ? {} : {};
   }
 }
 
@@ -109,16 +123,20 @@ export async function updateChapterProgress(chapterId, score, totalQuestions, co
         attempts: 0,
         bestScore: 0,
         totalQuestions: 0,
+        completedQuestions: 0,
         totalCorrect: 0,
-        completed: false
+        completed: false,
+        accuracy: 0
       };
     }
 
     progress[chapterId].attempts += 1;
     progress[chapterId].bestScore = Math.max(progress[chapterId].bestScore, score);
-    progress[chapterId].totalQuestions += totalQuestions;
+    progress[chapterId].totalQuestions = Math.max(progress[chapterId].totalQuestions, totalQuestions);
+    progress[chapterId].completedQuestions = Math.max(progress[chapterId].completedQuestions, totalQuestions);
     progress[chapterId].totalCorrect += correctAnswers;
-    progress[chapterId].completed = correctAnswers === totalQuestions;
+    progress[chapterId].accuracy = Math.round((progress[chapterId].totalCorrect / (progress[chapterId].attempts * totalQuestions)) * 100);
+    progress[chapterId].completed = progress[chapterId].accuracy >= 80; // 80% accuracy threshold
 
     await AsyncStorage.setItem(STORAGE_KEYS.CHAPTER_PROGRESS, JSON.stringify(progress));
     return progress[chapterId];
